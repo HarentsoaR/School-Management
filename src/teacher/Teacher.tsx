@@ -126,7 +126,7 @@ const Teacher = () => {
             <NavigationBar />
             <AddModal open={open} handleClose={handleClose} handleSubmit={handleSubmit} />
             <UpdateModal open={updateOpen} handleClose={handleUpdateClose} handleUpdateSubmit={handleUpdateSubmit} teacherData={selectedTeacher} />
-            <h1 className="text-center text-3xl font-light mt-10"><FontAwesomeIcon icon={faList} className='mr-5' />T E A C H E R S<span className='ms-10'>L I S T</span></h1>
+            <h1 className="text-center text-3xl font-light mt-10"><FontAwesomeIcon icon={faList} className='mr-5' />T E A C H E R <span className='ms-10'>L I S T</span></h1>
             <TableContainer component={Container} className='container mt-3'>
                 <Grid container className="mt-4">
                     <Grid item xs={0} sm={6}>
