@@ -20,4 +20,12 @@
     @apply border-2 border-indigo-500 hover:border-indigo-100;
     @apply transition ease-out duration-300;
 } */
-  
+.button_nav{
+    @apply flex items-center px-6 py-2;
+    @apply hover:text-gray-700 text-gray-400 ;
+    @apply hover:bg-gray-100;
+    @apply transition-colors duration-300 transform rounded-e-lg ;
+}
+.button_navI{
+    @apply w-5 ms-6 h-5
+}
