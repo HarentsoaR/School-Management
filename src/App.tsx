@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Teacher from './teacher/Teacher';
 import Room from './room/Room';
 import NotFound from './components/NotFound'
+import Reservation from './reservation/Reservation';
 
 const App: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/teacher" element={<Teacher />} />
         <Route path="/room" element={<Room />} />
+        <Route path="/reservations" element={<Reservation />} />
         {/* Add a catch-all route for any undefined routes */}
         <Route path="*" element={<NotFound />} />
       </Routes>

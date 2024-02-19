@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* .deleteBtn{
+.deleteBtn{
     @apply text-red-900 rounded-md bg-red-200 hover:bg-red-500 hover:text-white border-2 hover:border-red-500 transition ease-in-out duration-150;
 }
 .updateBtn{
@@ -14,34 +14,14 @@
     @apply px-4 py-2;
   }
 .insertBtn{
-    @apply rounded-md py-2 text-center ;
+    @apply rounded-md py-2 text-center;
     @apply  hover:text-indigo-100 text-indigo-500;
     @apply hover:bg-indigo-500 bg-indigo-100 ;
     @apply border-2 border-indigo-500 hover:border-indigo-100;
     @apply transition ease-out duration-300;
-} */
-.button_nav{
-    @apply flex items-center px-6 py-2;
-    @apply hover:text-gray-700 text-gray-400 ;
-    @apply hover:bg-gray-100;
-    @apply transition-colors duration-300 transform rounded-e-lg ;
 }
-.button_navI{
-    @apply w-5 ms-6 h-5
+.selectBox{
+    @apply mt-5
 }
 
-/* Media query for smaller screens */
-@media (max-width:  768px) {
-    .button_nav {
-        /* Styles for the button on smaller screens */
-        padding:  0px  0px;
-        /* ... other styles ... */
-    }
-
-    .button_navI {
-        /* Styles for the SVG icon on smaller screens */
-        width:  10px;
-        height:  13px;
-        /* ... other styles ... */
-    }
-}
+  

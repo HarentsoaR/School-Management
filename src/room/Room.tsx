@@ -1,7 +1,7 @@
 import { faEdit, faList, faListNumeric, faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import NavigationBar from "../components/NavigationBar"
-import { TableContainer, Paper, Grid, Button, TextField, InputAdornment, Table, TableHead, TableRow, TableCell, TableBody, Container } from "@mui/material"
+import { TableContainer, Grid, Button, TextField, InputAdornment, Table, TableHead, TableRow, TableCell, TableBody, Container } from "@mui/material"
 import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
 import './tailwind.css'
@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { faPrescription } from "@fortawesome/free-solid-svg-icons/faPrescription";
 import AddModal from "./AddModal";
 import UpdateModal from "./UpdateModal";
+import SideBar from "../components/SideBar";
 
 
 const Room = () => {
@@ -97,8 +98,13 @@ const Room = () => {
     
 
     return (
+        <>
+        <Grid container className='grid-cols-12'>
+        <Grid item xs={2}>
+            <SideBar/>
+        </Grid>
+        <Grid item xs={10} className='w-full h-full'>
         <div className="flex flex-col items-center">
-            <NavigationBar />
             <AddModal open={open} handleClose={handleClose} handleSubmit={handleSubmit} />
             <UpdateModal open={updateOpen} handleClose={handleUpdateClose} handleUpdateSubmit={handleUpdateSubmit} classroomData={selectedRoom} />
             <h1 className="text-center text-3xl font-light mt-10"><FontAwesomeIcon icon={faList} className='mr-5' />C L A S S R O O M S<span className='ms-10'>L I S T</span></h1>
@@ -135,7 +141,7 @@ const Room = () => {
                         />
                     </Grid>
                 </Grid>
-                <Table className="min-w-full divide-y divide-gray-200 mt-2" aria-label="simple table">
+                <Table className="min-w-full divide-y divide-gray-200 mt-3" aria-label="simple table">
                     <TableHead>
                         <TableRow>
                             <TableCell className='th text-center fw-bold'> <FontAwesomeIcon icon={faListNumeric} className='mr-1.5' />Room Number</TableCell>
@@ -166,6 +172,9 @@ const Room = () => {
                 </Table>
             </TableContainer>
         </div>
+        </Grid>
+        </Grid>
+        </>
     )
 }
 

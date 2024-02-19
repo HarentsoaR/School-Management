@@ -9,6 +9,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddModal from './AddModal';
 import './tailwind.css'
 import UpdateModal from './UpdateModal';
+import SideBar from '../components/SideBar';
 
 const Teacher = () => {
     const [teachers, setTeachers] = useState([]);
@@ -93,7 +94,7 @@ const Teacher = () => {
     };
     const handleDelete = async (teacherId) => {
         try {
-            const response = await axios.delete(`http://localhost:8080/api/teachers/${teacherId}`);
+            await axios.delete(`http://localhost:8080/api/teachers/${teacherId}`);
             fetchTeachers();
             console.log("Teacher deleted!");
         }
@@ -122,8 +123,14 @@ const Teacher = () => {
     };
 
     return (
+        
+        <Grid container className='grid-cols-12'>
+        <Grid item xs={2}>
+            <SideBar/>
+        </Grid>
+        <Grid item xs={10} className='w-full h-full'>
         <div className="flex flex-col items-center">
-            <NavigationBar />
+            {/* <NavigationBar /> */}
             <AddModal open={open} handleClose={handleClose} handleSubmit={handleSubmit} />
             <UpdateModal open={updateOpen} handleClose={handleUpdateClose} handleUpdateSubmit={handleUpdateSubmit} teacherData={selectedTeacher} />
             <h1 className="text-center text-3xl font-light mt-10"><FontAwesomeIcon icon={faList} className='mr-5' />T E A C H E R <span className='ms-10'>L I S T</span></h1>
@@ -196,6 +203,9 @@ const Teacher = () => {
                 </Table>
             </TableContainer>
         </div>
+        </Grid>
+        </Grid>
+        
     );
 };
 

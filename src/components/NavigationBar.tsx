@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Typography, Button } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendar, faDashboard, faHSquare, faHome, faHouse, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faDashboard, faHome, faUser } from '@fortawesome/free-solid-svg-icons';
 
 const NavigationBar = () => {
   const theme = useTheme();
