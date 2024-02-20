@@ -24,11 +24,23 @@
     @apply flex items-center px-6 py-2;
     @apply hover:text-gray-700 text-gray-400 ;
     @apply hover:bg-gray-100;
-    @apply transition-colors duration-300 transform rounded-e-lg ;
+    @apply transition-colors duration-300 transform rounded-lg ;
 }
 .button_navI{
-    @apply w-5 ms-6 h-5
+    @apply w-5 h-5 flex justify-items-center
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Media query for smaller screens */
 @media (max-width:  768px) {
@@ -45,3 +57,4 @@
         /* ... other styles ... */
     }
 }
+

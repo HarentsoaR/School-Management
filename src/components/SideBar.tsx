@@ -4,13 +4,13 @@ const SideBar = () => {
 
     return (
         <>
-            <aside className="flex flex-col w-full h-screen py-8 overflow-y-auto bg-slate-800 border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700">
+            <aside className="flex flex-col w-full h-screen py-8 overflow-y-auto bg-gradient-to-t from-slate-600 to-slate-900 border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700">
                 <a className="mx-auto mt-2 mb-4" >
-                    <img className="w-auto h-20 rounded" src="/iconWeb.png" alt="" />
+                    <img className="w-auto h-20 rounded opacity-75" src="/iconWeb.png" alt="" />
                 </a>
 
                 <div className="flex flex-col justify-between flex-1 mt-6">
-                    <nav className="-mx-3 space-y-6 pe-4">
+                    <nav className="mx-3 space-y-6 pe-4">
                         <div className="space-y-3 ">
                             <label className="px-3 ms-3 text-xs text-gray-500 uppercase dark:text-gray-200">analytics</label>
 
