@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, MenuItem, Select, InputLabel, FormControl, Box } from '@mui/material';
+import DateTimePicker from '../components/DateTimePicker';
 
 const UpdateModal = ({ open, handleClose, handleUpdate, reservation }) => {
   const formatDateTime = () => {
     const now = new Date();
     const year = now.getFullYear();
-    const month = (now.getMonth() +   1).toString().padStart(2, '0');
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
     const day = now.getDate().toString().padStart(2, '0');
     const hours = now.getHours().toString().padStart(2, '0');
     const minutes = now.getMinutes().toString().padStart(2, '0');
@@ -61,22 +62,14 @@ const UpdateModal = ({ open, handleClose, handleUpdate, reservation }) => {
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
       <DialogTitle>Update Reservation</DialogTitle>
       <DialogContent>
-        <Box sx={{ mb:   2 }}>
-          <TextField
-            fullWidth
-            label="Date and Time"
-            type="datetime-local"
-            defaultValue={dateTime}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={(e) => setDateTime(e.target.value)}
-          />
+        <Box sx={{ mb: 2 }}>
+          <DateTimePicker dateTime={dateTime} setDateTime={setDateTime} />
         </Box>
-        <Box sx={{ mb:   2 }}>
-          <InputLabel>Teacher</InputLabel>
+        <Box sx={{ mb: 2 }}>
           <FormControl fullWidth>
-            <Select
+            <TextField
+              select
+              label={"Teacher"}
               value={selectedTeacher}
               onChange={(e) => setSelectedTeacher(e.target.value)}
             >
@@ -85,13 +78,14 @@ const UpdateModal = ({ open, handleClose, handleUpdate, reservation }) => {
                   {teacher.name}
                 </MenuItem>
               ))}
-            </Select>
+            </TextField>
           </FormControl>
         </Box>
-        <Box sx={{ mb:   2 }}>
-          <InputLabel>Room</InputLabel>
+        <Box sx={{ mb: 2 }}>
           <FormControl fullWidth>
-            <Select
+            <TextField
+              select
+              label={"Classroom"}
               value={selectedRoom}
               onChange={(e) => setSelectedRoom(e.target.value)}
             >
@@ -100,7 +94,7 @@ const UpdateModal = ({ open, handleClose, handleUpdate, reservation }) => {
                   {room.codesalle}
                 </MenuItem>
               ))}
-            </Select>
+            </TextField>
             <input type="hidden" value={reservationId} /> {/* Hidden input for the teacher ID */}
           </FormControl>
         </Box>

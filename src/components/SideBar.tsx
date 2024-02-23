@@ -4,7 +4,7 @@ const SideBar = () => {
 
     return (
         <>
-            <aside className="flex flex-col w-full h-screen py-8 overflow-y-auto bg-gradient-to-t from-slate-600 to-slate-900 border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700">
+            <aside className="flex flex-col w-full h-screen py-8 overflow-y-auto bg-gradient-to-t from-slate-800 to-indigo-950 border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700 rounded-sm">
                 <a className="mx-auto mt-2 mb-4" >
                     <img className="w-auto h-20 rounded opacity-75" src="/iconWeb.png" alt="" />
                 </a>

@@ -1,6 +1,5 @@
-import { faEdit, faList, faListNumeric, faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons"
+import { faEdit, faList, faListNumeric, faPen, faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import NavigationBar from "../components/NavigationBar"
 import { TableContainer, Grid, Button, TextField, InputAdornment, Table, TableHead, TableRow, TableCell, TableBody, Container } from "@mui/material"
 import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
@@ -10,6 +9,7 @@ import { faPrescription } from "@fortawesome/free-solid-svg-icons/faPrescription
 import AddModal from "./AddModal";
 import UpdateModal from "./UpdateModal";
 import SideBar from "../components/SideBar";
+import { Toast } from '../components/Toast';
 
 
 const Room = () => {
@@ -48,8 +48,12 @@ const Room = () => {
             console.log(response.data);
             handleUpdateClose();
             fetchClassRooms(); // Refresh the list of teachers
+            Toast.fire({
+                icon:"success",
+                title: "Classroom updated successfully !"
+            })
         } catch (error) {
-            console.error('Error updating teacher:', error);
+            console.error('Error updating classroom:', error);
         }
     };
 
@@ -78,6 +82,10 @@ const Room = () => {
             console.log(response.data);
             handleClose();
             fetchClassRooms(); // Refresh the list of teachers
+            Toast.fire({
+                icon:"success",
+                title: "Teacher added successfully !"
+            })
         } catch (error) {
             console.error('Error saving teacher:', error);
         }
@@ -91,90 +99,122 @@ const Room = () => {
             // console.log("Room deleted!");
             // console.log(response.data);
             fetchClassRooms();
+            Toast.fire({
+                icon:"success",
+                title: "Classroom deleted successfully !"
+            })
         } catch (error) {
             console.error('Error deleting room:', error);
+            Toast.fire({
+                icon:"error",
+                title: "Error ! Please check your reservation"
+            })
         }
     }
-    
+
 
     return (
-        <>
         <Grid container className='grid-cols-12'>
-        <Grid item xs={2}>
-            <SideBar/>
-        </Grid>
-        <Grid item xs={10} className='w-full h-full'>
-        <div className="flex flex-col items-center">
-            <AddModal open={open} handleClose={handleClose} handleSubmit={handleSubmit} />
-            <UpdateModal open={updateOpen} handleClose={handleUpdateClose} handleUpdateSubmit={handleUpdateSubmit} classroomData={selectedRoom} />
-            <h1 className="text-center text-3xl font-light mt-10"><FontAwesomeIcon icon={faList} className='mr-5' />C L A S S R O O M S<span className='ms-10'>L I S T</span></h1>
-            <TableContainer component={Container} className='container mt-3'>
-                <Grid container className="mt-4">
-                    <Grid item xs={0} sm={6}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleOpen}
-                            className="py-2 px-3 mt-3"
-                        >
-                            <FontAwesomeIcon icon={faPlus} />
-                        </Button>
-                    </Grid>
-                    <Grid item xs={12} sm={5} className='my-auto'>
+            <Grid item xs={2}>
+                <SideBar />
+            </Grid>
+            <Grid item xs={10} className='w-full h-full'>
+                <div style={{
+                    backgroundImage: `url(school-bg/pen3.jpg)`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    minHeight: '100vh',
+                    position: 'relative',
+                }}>
+                    <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(255,   255,   255,   0.5)', // Semi-transparent white overlay
+                        zIndex: -1,
+                    }}></div>
+                    <div className="text-center text-4xl font-bold py-10 roboto-font-h1">
+                        <span className="letter">C</span>
+                        <span className="letter">L</span>
+                        <span className="letter">A</span>
+                        <span className="letter">S</span>
+                        <span className="letter">S</span>
+                        <span className="letter">R</span>
+                        <span className="letter">O</span>
+                        <span className="letter">O</span>
+                        <span className="letter">M</span>
+                    </div>
+                    <div className="flex flex-col items-center mx-20 bg-slate-200 rounded-2xl shadow-2xl shadow-blue-200 roomModal">
+                        <AddModal open={open} handleClose={handleClose} handleSubmit={handleSubmit} />
+                        <UpdateModal open={updateOpen} handleClose={handleUpdateClose} handleUpdateSubmit={handleUpdateSubmit} classroomData={selectedRoom} />
+                        <TableContainer component={Container} className='container'>
+                            <Grid container className="mt-4">
+                                <Grid item xs={0} sm={6}>
+                                    <button
+                                        color="primary"
+                                        onClick={handleOpen}
+                                        className="updateBtn py-2 px-3 mt-3"
+                                    >
+                                        <FontAwesomeIcon icon={faPlus} />
+                                    </button>
+                                </Grid>
+                                <Grid item xs={12} sm={5} className='my-auto'>
 
-                        <TextField
-                            fullWidth
-                            label="Search Classroom"
-                            variant="outlined"
-                            //value={}
-                            //onChange={}
-                            //className={}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <SearchIcon />
-                                    </InputAdornment>
-                                ),
-                            }}
-                        //error={} // This will show the error state in Material UI
-                        //helperText={searchError ? 'Teacher not Found' : ''} // This will show the error message in Material UI
-                        />
-                    </Grid>
-                </Grid>
-                <Table className="min-w-full divide-y divide-gray-200 mt-3" aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell className='th text-center fw-bold'> <FontAwesomeIcon icon={faListNumeric} className='mr-1.5' />Room Number</TableCell>
-                            <TableCell className='th text-center fw-bold'> <FontAwesomeIcon icon={faPrescription} className='mr-1.5' />Designation</TableCell>
-                            <TableCell className='th text-center fw-bold'> <FontAwesomeIcon icon={faEdit} className='mr-1.5' />Actions</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {classrooms.map((classroom) => (
-                            <TableRow key={classroom.id}>
-                                <TableCell className='text-center'>{classroom.codesalle}</TableCell>
-                                <TableCell component="th" scope="row" className='text-center'>
-                                    {classroom.designation}
-                                </TableCell>
-                                <TableCell>
-                                    <div className='flex justify-around'>
-                                        <button className='updateBtn px-8 py-1.5' onClick={() => handleUpdateOpen(classroom)}>
-                                            <FontAwesomeIcon icon={faEdit} />
-                                        </button>
-                                        <button className='deleteBtn px-8 py-1.5' onClick={() => handleDelete(classroom)}>
-                                            <FontAwesomeIcon icon={faTrashAlt} />
-                                        </button>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </div>
+                                    <TextField
+                                        fullWidth
+                                        label="Search Classroom"
+                                        variant="outlined"
+                                        //value={}
+                                        //onChange={}
+                                        //className={}
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <SearchIcon />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    //error={} // This will show the error state in Material UI
+                                    //helperText={searchError ? 'Teacher not Found' : ''} // This will show the error message in Material UI
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Table className="min-w-full divide-y divide-gray-200 mt-3" aria-label="simple table">
+                                <TableHead>
+                                    <TableRow className="tableH">
+                                        <TableCell className='text-center fw-light'> <FontAwesomeIcon icon={faListNumeric} className='mr-1.5' />Classroom code</TableCell>
+                                        <TableCell className='text-center fw-light'> <FontAwesomeIcon icon={faPrescription} className='mr-1.5' />Designation</TableCell>
+                                        <TableCell className='text-center fw-light'> <FontAwesomeIcon icon={faPen} className='mr-1.5' />Actions</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {classrooms.map((classroom) => (
+                                        <TableRow key={classroom.id}>
+                                            <TableCell className='text-center'>{classroom.codesalle}</TableCell>
+                                            <TableCell component="th" scope="row" className='text-center'>
+                                                {classroom.designation}
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className='flex justify-around'>
+                                                    <button className='updateBtn px-8 py-1.5' onClick={() => handleUpdateOpen(classroom)}>
+                                                        <FontAwesomeIcon icon={faEdit} />
+                                                    </button>
+                                                    <button className='deleteBtn px-8 py-1.5' onClick={() => handleDelete(classroom)}>
+                                                        <FontAwesomeIcon icon={faTrashAlt} />
+                                                    </button>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </div></div>
+            </Grid>
         </Grid>
-        </Grid>
-        </>
     )
 }
 

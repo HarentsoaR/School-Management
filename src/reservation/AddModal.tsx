@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, MenuItem, Select, InputLabel, FormControl, Box } from '@mui/material';
+import DateTimePicker from '../components/DateTimePicker';
+
 
 const AddModal = ({ open, handleClose, handleSubmit }) => {
-  
-  const formatDateTime = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = (now.getMonth() +  1).toString().padStart(2, '0');
-    const day = now.getDate().toString().padStart(2, '0');
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    const seconds = now.getSeconds().toString().padStart(2, '0');
 
-    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
-};
+    const formatDateTime = () => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate().toString().padStart(2, '0');
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+    };
     const [dateTime, setDateTime] = useState(formatDateTime());
     const [teachers, setTeachers] = useState([]);
     const [rooms, setRooms] = useState([]);
@@ -49,38 +51,30 @@ const AddModal = ({ open, handleClose, handleSubmit }) => {
         }
     }, [open]);
 
-  const handleSubmitClick = () => {
-    // Construct the reservation object with the IDs enclosed in double quotes
-    const reservation = {
-        teacher: `${selectedTeacher}`,
-        room: `${selectedRoom}`,
-        date: dateTime,
+    const handleSubmitClick = () => {
+        // Construct the reservation object with the IDs enclosed in double quotes
+        const reservation = {
+            teacher: `${selectedTeacher}`,
+            room: `${selectedRoom}`,
+            date: dateTime,
+        };
+        handleSubmit(reservation);
+        handleClose();
     };
-    handleSubmit(reservation);
-    handleClose();
-};
 
 
     return (
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
             <DialogTitle>Add Reservation</DialogTitle>
             <DialogContent>
-                <Box sx={{ mb:  2 }}>
-                    <TextField
-                        fullWidth
-                        label="Date and Time"
-                        type="datetime-local"
-                        defaultValue={dateTime}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                        onChange={(e) => setDateTime(e.target.value)}
-                    />
+                <Box sx={{ mb: 2 }}>
+                    <DateTimePicker dateTime={dateTime} setDateTime={setDateTime} />
                 </Box>
-                <Box sx={{ mb:  2 }}>
-                <InputLabel>Teacher</InputLabel>
+                <Box sx={{ mb: 2 }}>
                     <FormControl fullWidth>
-                        <Select
+                        <TextField
+                            select
+                            label="Teacher"
                             value={selectedTeacher}
                             onChange={(e) => setSelectedTeacher(e.target.value)}
                         >
@@ -89,13 +83,14 @@ const AddModal = ({ open, handleClose, handleSubmit }) => {
                                     {teacher.name}
                                 </MenuItem>
                             ))}
-                        </Select>
+                        </TextField>
                     </FormControl>
                 </Box>
-                <Box sx={{ mb:  2 }}>
-                <InputLabel>Room</InputLabel>
+                <Box sx={{ mb: 2 }}>
                     <FormControl fullWidth>
-                        <Select
+                        <TextField
+                            select
+                            label="Classroom"
                             value={selectedRoom}
                             onChange={(e) => setSelectedRoom(e.target.value)}
                         >
@@ -104,7 +99,7 @@ const AddModal = ({ open, handleClose, handleSubmit }) => {
                                     {room.codesalle}
                                 </MenuItem>
                             ))}
-                        </Select>
+                        </TextField>
                     </FormControl>
                 </Box>
             </DialogContent>

@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { TableContainer, Grid, Button, TextField, InputAdornment, Table, TableHead, TableRow, TableCell, TableBody, Container } from '@mui/material';
-import NavigationBar from '../components/NavigationBar';
+import { TableContainer, Grid, Table, TableHead, TableRow, TableCell, TableBody, Container } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faList, faPlus, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import SearchIcon from '@mui/icons-material/Search';
+import {  faPlus, faEdit, faTrashAlt, faPen, faClock, faCalendar, faHomeAlt, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import AddModal from './AddModal';
 import UpdateModal from './UpdateModal';
 import SideBar from '../components/SideBar';
 import './tailwind.css';
+import { Toast } from '../components/Toast';
 
 const Reservation = () => {
     const [reservations, setReservations] = useState([]);
@@ -47,12 +46,19 @@ const Reservation = () => {
                 room: updatedReservationData.room,
                 date: updatedReservationData.date,
             };
-
+            Toast.fire({
+                icon:"error",
+                title: "Error while updating a resrevation !"
+            })
             const response = await axios.put(`http://localhost:8080/api/reserve/update/${selectedReservation}`, updatedReservation);
             console.log(response.data); // 
         } catch (error) {
             handleUpdateClose();
             fetchReservations();
+            Toast.fire({
+                icon:"success",
+                title: "Classroom reservation updated successfully !"
+            })
             console.error('Error updating resersvation:', error);
         }
     };
@@ -105,30 +111,38 @@ const Reservation = () => {
             if (!reservationData.teacher || !reservationData.room) {
                 throw new Error('Teacher and room IDs are required');
             }
-    
+
             // Construct the reservation object with the IDs from reservationData
             const reservation = {
                 teacher: reservationData.teacher, // This should be the teacher's ID
                 room: reservationData.room, // This should be the room's ID
                 date: reservationData.date,
             };
-    
+
             // Send the POST request to the backend
             const response = await axios.post(`http://localhost:8080/api/reserve/save`, reservation);
             console.log(response.data);
             handleClose();
             fetchReservations(); // Refresh the list of reservations
+            Toast.fire({
+                icon:"success",
+                title: "Classroom is reserved successfully !"
+            })
         } catch (error) {
             console.error('Error saving reservations:', error);
         }
     };
-    
+
 
     const handleDelete = async (reservationId) => {
         try {
             await axios.delete(`http://localhost:8080/api/reserve/delete/${reservationId}`);
             fetchReservations();
             console.log("Reserve deleted!");
+            Toast.fire({
+                icon:"success",
+                title: "Classroom reservation was successfully deleted !"
+            })
         }
         catch (error) {
             console.error('Error deleting Reserve:', error);
@@ -142,33 +156,61 @@ const Reservation = () => {
                     <SideBar />
                 </Grid>
                 <Grid item xs={10} className='w-full h-full'>
-                    <div className="flex flex-col items-center">
-                        {/* Add and Update Modals */}
-                        <AddModal open={open} handleClose={handleClose} handleSubmit={handleSubmit} />
-                        <UpdateModal open={updateOpen} handleClose={handleUpdateClose} handleUpdate={handleUpdateSubmit} reservation={selectedReservation} />
-                        {/* Table and other elements */}
-                        <h1 className="text-center text-3xl font-light mt-10"><FontAwesomeIcon icon={faList} className='mr-5' />R E S E R V A T I O N S<span className='ms-10'>L I S T</span></h1>
-                        <TableContainer component={Container} className='container mt-3'>
-                            <Grid container className='mt-4'>
-                                <Grid item xs={0} sm={6}>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={handleOpen}
-                                        className="py-2 px-3 mt-3"
-                                    >
-                                        <FontAwesomeIcon icon={faPlus} />
-                                    </Button>
+                    <div style={{
+                        backgroundImage: `url(school-bg/pen3.jpg)`,
+                        backgroundRepeat: 'no-repeat',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        minHeight: '100vh',
+                        position: 'relative',
+                    }}>
+                        <div style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            backgroundColor: 'rgba(255,   255,   255,   0.5)', // Semi-transparent white overlay
+                            zIndex: -1,
+                        }}></div>
+                        <div className="text-center text-4xl font-bold py-10 roboto-font-h1">
+                            <span className="letter">R</span>
+                            <span className="letter">E</span>
+                            <span className="letter">S</span>
+                            <span className="letter">E</span>
+                            <span className="letter">R</span>
+                            <span className="letter">V</span>
+                            <span className="letter">A</span>
+                            <span className="letter">T</span>
+                            <span className="letter">I</span>
+                            <span className="letter">O</span>
+                            <span className="letter">N</span>
+                        </div>
+                        <div className="flex flex-col items-center mx-20 bg-slate-200 rounded-2xl shadow-2xl shadow-blue-200 reservationModal">
+                            {/* Add and Update Modals */}
+                            <AddModal open={open} handleClose={handleClose} handleSubmit={handleSubmit} />
+                            <UpdateModal open={updateOpen} handleClose={handleUpdateClose} handleUpdate={handleUpdateSubmit} reservation={selectedReservation} />
+                            {/* Table and other elements */}
+                            <TableContainer component={Container} className='container mt-3'>
+                                <Grid container className='mt-4'>
+                                    <Grid item xs={0} sm={6}>
+                                        <button
+                                            color="primary"
+                                            onClick={handleOpen}
+                                            className="updateBtn py-2 px-3"
+                                        >
+                                            <FontAwesomeIcon icon={faPlus} />
+                                        </button>
+                                    </Grid>
                                 </Grid>
-                                        </Grid>
-                                <Table className="my-4 min-w-full divide-y divide-gray-200" aria-label="simple table">
+                                <Table className="min-w-full divide-y divide-gray-200 mt-3" aria-label="simple table">
                                     <TableHead>
-                                        <TableRow>
-                                            <TableCell className='th text-center fw-bold'>Date</TableCell>
-                                            <TableCell className='th text-center fw-bold'>Time</TableCell>
-                                            <TableCell className='th text-center fw-bold'>Teacher</TableCell>
-                                            <TableCell className='th text-center fw-bold'>Room</TableCell>
-                                            <TableCell className='th text-center fw-bold'>Actions</TableCell>
+                                        <TableRow className='tableH'>
+                                            <TableCell className='text-center fw-light'><FontAwesomeIcon icon={faCalendar} className='mr-1.5' />Date</TableCell>
+                                            <TableCell className='text-center fw-light'><FontAwesomeIcon icon={faClock} className='mr-1.5' />Time</TableCell>
+                                            <TableCell className='text-center fw-light'><FontAwesomeIcon icon={faUserCircle} className='mr-1.5' />Teacher</TableCell>
+                                            <TableCell className='text-center fw-light'><FontAwesomeIcon icon={faHomeAlt} className='mr-1.5' />Classroom</TableCell>
+                                            <TableCell className='text-center fw-light'><FontAwesomeIcon icon={faPen} className='mr-1.5' />Actions</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -196,8 +238,8 @@ const Reservation = () => {
                                     </TableBody>
 
                                 </Table>
-                        </TableContainer>
-                    </div>
+                            </TableContainer>
+                        </div></div>
                 </Grid>
             </Grid>
         </>

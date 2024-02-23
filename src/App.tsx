@@ -6,11 +6,15 @@ import Teacher from './teacher/Teacher';
 import Room from './room/Room';
 import NotFound from './components/NotFound'
 import Reservation from './reservation/Reservation';
+import Login from './authentication/Login';
+import SignUp from './authentication/Signup';
 
 const App: React.FC = () => {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route path="/teacher" element={<Teacher />} />
         <Route path="/room" element={<Room />} />
         <Route path="/reservations" element={<Reservation />} />
