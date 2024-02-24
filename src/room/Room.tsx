@@ -1,8 +1,7 @@
-import { faEdit, faList, faListNumeric, faPen, faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons"
+import { faEdit, faListNumeric, faPen, faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { TableContainer, Grid, Button, TextField, InputAdornment, Table, TableHead, TableRow, TableCell, TableBody, Container } from "@mui/material"
+import { TableContainer, Grid, TextField, InputAdornment, Table, TableHead, TableRow, TableCell, TableBody, Container } from "@mui/material"
 import SearchIcon from '@mui/icons-material/Search';
-import axios from "axios";
 import './tailwind.css'
 import { useState, useEffect } from "react";
 import { faPrescription } from "@fortawesome/free-solid-svg-icons/faPrescription";
@@ -10,13 +9,15 @@ import AddModal from "./AddModal";
 import UpdateModal from "./UpdateModal";
 import SideBar from "../components/SideBar";
 import { Toast } from '../components/Toast';
-
+import axiosInstance from '../components/axiosInstance';
 
 const Room = () => {
     const [classrooms, setClasrooms] = useState([]);
     const [open, setOpen] = useState(false);
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [updateOpen, setUpdateOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchError, setSearchError] = useState(false);
 
     //Modal Treatments
     const handleOpen = () => setOpen(true);
@@ -44,12 +45,12 @@ const Room = () => {
                 designation: updatedRoomData.designation
             };
 
-            const response = await axios.put(`http://localhost:8080/api/room/update/${selectedRoom.id}`, updatedRoom);
+            const response = await axiosInstance.put(`/room/update/${selectedRoom.id}`, updatedRoom);
             console.log(response.data);
             handleUpdateClose();
             fetchClassRooms(); // Refresh the list of teachers
             Toast.fire({
-                icon:"success",
+                icon: "success",
                 title: "Classroom updated successfully !"
             })
         } catch (error) {
@@ -59,7 +60,7 @@ const Room = () => {
 
     const fetchClassRooms = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/room/list`);
+            const response = await axiosInstance.get(`/room/list`);
             setClasrooms(response.data);
         }
         catch (error) {
@@ -78,16 +79,21 @@ const Room = () => {
                 designation: classroomData.designation,
             };
 
-            const response = await axios.post(`http://localhost:8080/api/room/save`, classroom);
+            const response = await axiosInstance.post(`/room/save`, classroom);
             console.log(response.data);
             handleClose();
             fetchClassRooms(); // Refresh the list of teachers
             Toast.fire({
-                icon:"success",
-                title: "Teacher added successfully !"
+                icon: "success",
+                title: "Classroom added successfully !"
             })
         } catch (error) {
-            console.error('Error saving teacher:', error);
+            console.error(error)
+            handleClose();
+            Toast.fire({
+                icon: "error",
+                title: `Clasroom with number ${classroomData.codesalle} already exists !`
+            });
         }
     };
 
@@ -95,22 +101,53 @@ const Room = () => {
         try {
             // Extract the ID from the object
             const classroomId = classroomIdObject.id;
-            const response = await axios.delete(`http://localhost:8080/api/room/delete/${classroomId}`);
+            await axiosInstance.delete(`/room/delete/${classroomId}`);
             // console.log("Room deleted!");
             // console.log(response.data);
             fetchClassRooms();
             Toast.fire({
-                icon:"success",
+                icon: "success",
                 title: "Classroom deleted successfully !"
             })
         } catch (error) {
             console.error('Error deleting room:', error);
             Toast.fire({
-                icon:"error",
+                icon: "error",
                 title: "Error ! Please check your reservation"
             })
         }
     }
+
+    const handleSearch = async (event) => {
+        const term = event.target.value.toLowerCase();
+        setSearchTerm(term);
+        setSearchError(false);
+
+        try {
+            let response;
+            if (term === '') {
+                response = await axiosInstance.get('/room/list')
+                setClasrooms(response.data)
+            }
+            else if (term !== '') {
+                // Filter the classrooms based on the search term
+                const filteredClassrooms = classrooms.filter(classroom =>
+                    classroom.codesalle.toLowerCase().includes(term) ||
+                    classroom.designation.toLowerCase().includes(term)
+                );
+                // Update the state with the filtered classrooms
+                setClasrooms(filteredClassrooms);
+                // Set the search error to false if matching classrooms are found, otherwise set it to true
+                setSearchError(filteredClassrooms.length > 0 ? false : true);
+            }
+
+        }
+        catch (error) {
+            setSearchError(false)
+        }
+
+    };
+
 
 
     return (
@@ -167,9 +204,9 @@ const Room = () => {
                                         fullWidth
                                         label="Search Classroom"
                                         variant="outlined"
-                                        //value={}
-                                        //onChange={}
-                                        //className={}
+                                        value={searchTerm}
+                                        onChange={handleSearch}
+                                        className={`m-3 ${searchError ? 'border-red-500' : ''}`}
                                         InputProps={{
                                             startAdornment: (
                                                 <InputAdornment position="start">
@@ -177,8 +214,8 @@ const Room = () => {
                                                 </InputAdornment>
                                             ),
                                         }}
-                                    //error={} // This will show the error state in Material UI
-                                    //helperText={searchError ? 'Teacher not Found' : ''} // This will show the error message in Material UI
+                                        error={searchError} // This will show the error state in Material UI
+                                        helperText={searchError ? 'Classroom not Found' : ''} // This will show the error message in Material UI
                                     />
                                 </Grid>
                             </Grid>

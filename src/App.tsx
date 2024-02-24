@@ -8,16 +8,17 @@ import NotFound from './components/NotFound'
 import Reservation from './reservation/Reservation';
 import Login from './authentication/Login';
 import SignUp from './authentication/Signup';
+import AuthWrapper from './utils/AuthWrapper';
 
 const App: React.FC = () => {
   return (
-    <Router>
+    <Router>  
       <Routes>
-        <Route path="/" element={<Login />} />
+      <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/teacher" element={<Teacher />} />
-        <Route path="/room" element={<Room />} />
-        <Route path="/reservations" element={<Reservation />} />
+        <Route path="/teacher" element={<AuthWrapper><Teacher /></AuthWrapper>} />
+        <Route path="/room" element={<AuthWrapper><Room /></AuthWrapper>} />
+        <Route path="/reservations" element={<AuthWrapper><Reservation /></AuthWrapper>} />
         {/* Add a catch-all route for any undefined routes */}
         <Route path="*" element={<NotFound />} />
       </Routes>

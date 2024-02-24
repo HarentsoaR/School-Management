@@ -1,23 +1,49 @@
 import React, { useState } from 'react';
-import { Button, TextField, Container, Box, Typography } from '@mui/material';
+import { TextField, Container, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import './login.css';
+import { Toast } from '../components/Toast';
+import axios from 'axios';
 
 const Login: React.FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const history = useNavigate();
 
-    const handleLogin = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Here you would typically validate the credentials and perform the login
-        console.log('Login', { username, password });
-        history.push('/dashboard'); // Redirect to dashboard or another page after successful login
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault(); // Prevent default form submission
+
+        try {
+            // Make a POST request to /auth/login with username and password
+            await axios.post('http://localhost:8080/auth/signup', {
+                username: username,
+                password: password
+            })
+            // Redirect to teacher or another page after successful login
+            Toast.fire({
+                icon: "success",
+                title: "Register complete !" // Include the sub value in the title
+            });
+            history('/');
+        } catch (error) {
+            Toast.fire({
+                icon: "error",
+                title: "Incorrect username or password !"
+            })
+            console.error('Signup failed:', error);
+            history('/signup');
+            Toast.fire({
+                icon: "error",
+                title: "Error, please check your information!" // Include the sub value in the title
+            });
+            
+            // Handle login failure, e.g., show an error message
+        }
     };
 
     // Define the style for the background image
     const backgroundStyle = {
-        backgroundImage: "url('school-bg/happyTeache.jpg')", // Replace '/path/to/your/image.jpg' with the actual path to your image
+        backgroundImage: "url('school-bg/teacherDay.jpg')", // Replace '/path/to/your/image.jpg' with the actual path to your image
         height: "100vh",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",

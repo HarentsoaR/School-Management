@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Grid, TextField, InputAdornment, Container } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faPlus, faTrashAlt, faStar, faIdBadge, faPen, faUserGraduate } from '@fortawesome/free-solid-svg-icons';
@@ -10,8 +9,7 @@ import UpdateModal from './UpdateModal';
 import SideBar from '../components/SideBar';
 import { Toast } from '../components/Toast';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons/faUserCircle';
-
-
+import axiosInstance from '../components/axiosInstance';
 
 const Teacher = () => {
     const [teachers, setTeachers] = useState([]);
@@ -46,12 +44,12 @@ const Teacher = () => {
                 codeprof: updatedTeacherData.teacherNumber,
             };
 
-            const response = await axios.put(`http://localhost:8080/api/teachers/${selectedTeacher.id}`, updatedTeacher);
+            const response = await axiosInstance.put(`/teachers/${selectedTeacher.id}`, updatedTeacher);
             console.log(response.data);
             handleUpdateClose();
             fetchTeachers(); // Refresh the list of teachers
             Toast.fire({
-                icon:"success",
+                icon: "success",
                 title: "Teacher updated successfully !"
             })
         } catch (error) {
@@ -67,11 +65,11 @@ const Teacher = () => {
 
     const fetchTeachers = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/teachers/list`);
+            // Set the token in the Authorization header
+            const response = await axiosInstance.get('/teachers/list')
             setTeachers(response.data);
-        }
-        catch (error) {
-            console.log("Error while retrieving users list")
+        } catch (error) {
+            console.log("Error while retrieving users list", error);
         }
     }
     useEffect(() => {
@@ -87,10 +85,10 @@ const Teacher = () => {
             let response;
             if (term === '') {
                 // Fetch all teachers if the search term is empty
-                response = await axios.get('http://localhost:8080/api/teachers/list')
+                response = await axiosInstance.get('/teachers/list')
             } else {
                 // Perform a search if there is a search term
-                response = await axios.get(`http://localhost:8080/api/teachers/search/${term}`)
+                response = await axiosInstance.get(`/teachers/search/${term}`)
             }
             setTeachers(response.data); // Update the teachers state with the search results or all teachers
         } catch (error) {
@@ -100,18 +98,18 @@ const Teacher = () => {
     };
     const handleDelete = async (teacherId) => {
         try {
-            await axios.delete(`http://localhost:8080/api/teachers/${teacherId}`);
+            await axiosInstance.delete(`/teachers/${teacherId}`);
             fetchTeachers();
             console.log("Teacher deleted!");
             Toast.fire({
-                icon:"success",
+                icon: "success",
                 title: "Teacher deleted successfully !"
             })
         }
         catch (error) {
             console.error('Error deleting teacher:', error);
             Toast.fire({
-                icon:"error",
+                icon: "error",
                 title: "Error ! Please check your reservation"
             })
         }
@@ -127,16 +125,21 @@ const Teacher = () => {
                 codeprof: teacherData.teacherNumber,
             };
 
-            const response = await axios.post(`http://localhost:8080/api/teachers/save`, teacher);
+            const response = await axiosInstance.post(`/teachers/save`, teacher);
             console.log(response.data);
             handleClose();
             fetchTeachers(); // Refresh the list of teachers
             Toast.fire({
-                icon:"success",
+                icon: "success",
                 title: "Teacher added successfully !"
             })
         } catch (error) {
-            console.error('Error saving teacher:', error);
+            console.error(error)
+            handleClose();
+            Toast.fire({
+                icon: "error",
+                title: `Teacher with number ${teacherData.teacherNumber} already exists !`
+            });
         }
     };
 

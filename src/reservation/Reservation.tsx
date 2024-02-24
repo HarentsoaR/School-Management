@@ -1,21 +1,19 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { TableContainer, Grid, Table, TableHead, TableRow, TableCell, TableBody, Container } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {  faPlus, faEdit, faTrashAlt, faPen, faClock, faCalendar, faHomeAlt, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faEdit, faTrashAlt, faPen, faClock, faCalendar, faHomeAlt, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import AddModal from './AddModal';
 import UpdateModal from './UpdateModal';
 import SideBar from '../components/SideBar';
 import './tailwind.css';
 import { Toast } from '../components/Toast';
+import axiosInstance from '../components/axiosInstance';
 
 const Reservation = () => {
     const [reservations, setReservations] = useState([]);
     const [open, setOpen] = useState(false);
     const [selectedReservation, setSelectedReservation] = useState(null);
     const [updateOpen, setUpdateOpen] = useState(false);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [searchError, setSearchError] = useState(false);
 
     // Function to open the add modal
     const handleOpen = () => setOpen(true);
@@ -47,16 +45,16 @@ const Reservation = () => {
                 date: updatedReservationData.date,
             };
             Toast.fire({
-                icon:"error",
+                icon: "error",
                 title: "Error while updating a resrevation !"
             })
-            const response = await axios.put(`http://localhost:8080/api/reserve/update/${selectedReservation}`, updatedReservation);
+            const response = await axiosInstance.put(`/reserve/update/${selectedReservation}`, updatedReservation);
             console.log(response.data); // 
         } catch (error) {
             handleUpdateClose();
             fetchReservations();
             Toast.fire({
-                icon:"success",
+                icon: "success",
                 title: "Classroom reservation updated successfully !"
             })
             console.error('Error updating resersvation:', error);
@@ -65,7 +63,7 @@ const Reservation = () => {
 
     const fetchReservations = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/reserve/list`);
+            const response = await axiosInstance.get(`/reserve/list`);
             setReservations(response.data);
         }
         catch (error) {
@@ -79,26 +77,6 @@ const Reservation = () => {
         const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
         const formattedTime = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
         return { formattedDate, formattedTime };
-    };
-
-    const handleSearch = async (event) => {
-        const term = event.target.value;
-        setSearchTerm(term);
-        setSearchError(false);
-        try {
-            let response;
-            if (term === '') {
-                // Fetch all teachers if the search term is empty
-                response = await axios.get('http://localhost:8080/api/teachers/list')
-            } else {
-                // Perform a search if there is a search term
-                response = await axios.get(`http://localhost:8080/api/teachers/search/${term}`)
-            }
-            setReservations(response.data); // Update the teachers state with the search results or all teachers
-        } catch (error) {
-            setSearchError(true);
-            console.error('Error fetching search results or all teachers:', error);
-        }
     };
 
     useEffect(() => {
@@ -120,12 +98,12 @@ const Reservation = () => {
             };
 
             // Send the POST request to the backend
-            const response = await axios.post(`http://localhost:8080/api/reserve/save`, reservation);
+            const response = await axiosInstance.post(`/reserve/save`, reservation);
             console.log(response.data);
             handleClose();
             fetchReservations(); // Refresh the list of reservations
             Toast.fire({
-                icon:"success",
+                icon: "success",
                 title: "Classroom is reserved successfully !"
             })
         } catch (error) {
@@ -136,11 +114,11 @@ const Reservation = () => {
 
     const handleDelete = async (reservationId) => {
         try {
-            await axios.delete(`http://localhost:8080/api/reserve/delete/${reservationId}`);
+            await axiosInstance.delete(`/reserve/delete/${reservationId}`);
             fetchReservations();
             console.log("Reserve deleted!");
             Toast.fire({
-                icon:"success",
+                icon: "success",
                 title: "Classroom reservation was successfully deleted !"
             })
         }
